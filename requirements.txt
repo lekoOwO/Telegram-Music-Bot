@@ -1,0 +1,3 @@
+aiotg>=0.7.3
+motor>=0.5
+pymongo

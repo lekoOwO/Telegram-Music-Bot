@@ -1,0 +1,13 @@
+musicbot:
+  image: szastupov/musicbot
+  restart: always
+  links:
+    - mongo
+  environment:
+    - BOT_NAME=
+    - API_TOKEN=
+    - BOTAN_TOKEN=Optional botan token
+    - MONGO_HOST=MONGODB_URI
+mongo:
+  image: mongo
+  restart: always
