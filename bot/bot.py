@@ -9,29 +9,30 @@ from aiotg import Bot, chat
 from database import db, text_search
 
 greeting = """
-✋ 歡迎來到棒棒勝 Music 的 Bot ! 🎧
-輸入關鍵字來搜尋音樂資料庫，傳送音樂檔案以增加至資料庫。
-輸入 `/help` 來獲取說明!
-** 丟進本 Bot 的音樂不會同步到頻道唷!只有頻道的會同步過來 owo **
+This is a Music bot!
 """
 
 help = """
-輸入關鍵字來搜尋音樂資料庫。
-在關鍵字後輸入`type:TYPE`來限定音樂格式，像這樣:
-```棒棒勝 type:flac```
-```棒棒勝 type:mp3```
-```棒棒勝 type:mpeg```
-若同時想搜尋作者和曲名，請用 `>` 隔開 (預設為作者、曲名都納入搜尋)，像這樣:
-```棒棒勝>洨安之歌```
-也可以搭配`type`指令，像這樣:
-```棒棒勝>洨安之歌 type:flac```
-輸入 `/stats` 來獲取 bot 資訊。
-用 `/music` 指令來在群聊內使用棒棒勝 Music Bot，像這樣:
-```/music 棒棒勝```
+Simply type in keywords to search from the database.
+Simply send music files to add to the database.
+Command `/help` for help.
+type:TYPE after keywords to restrict the type of result.
+```Xiaoan type:flac```
+```Xiaoan type:mp3``` ( mp3 was converted to mpeg in bot since mp3 is not a mime-type.)
+```Xiaoan type:mpeg```
+Seperate the artist and song by > .
+```Xiaoan>The song of early-spring```
+It also works great with type.
+```Xiaoan>The song of early-spring type:flac```
+Command /stats for the status of bot.
+Command /music to send music files from this bot in a group chat.
+```/music Xiaoan```
+Songs which was uploaded to the music channel will be sync to the database.
+This bot supports inline mode, too.
 """
 
 not_found = """
-找不到資料 :/
+Data not found ._.
 """
 bot = Bot(
     api_token=os.environ.get('API_TOKEN'),
@@ -48,13 +49,13 @@ async def add_track(chat, audio):
     else:
         sendervar = str(chat.sender)
     if (await db.tracks.find_one({ "file_id": audio["file_id"] })):
-        await chat.send_text("資料庫裡已經有這首囉 owo")
-        logger.info("%s 傳送了重複的歌曲 %s %s", sendervar, str(audio.get("performer")), str(audio.get("title")))
-        await bot.send_message(os.environ.get("LOGCHN_ID"),sendervar + " 傳送了重複的歌曲 " + str(audio.get("performer")) + " - " + str(audio.get("title")))
+        await chat.send_text("The song has already been added to the database owo")
+        logger.info("%s sent a existed music %s %s", sendervar, str(audio.get("performer")), str(audio.get("title")))
+        await bot.send_message(os.environ.get("LOGCHN_ID"),sendervar + " sent a existed music " + str(audio.get("performer")) + " - " + str(audio.get("title")))
         return
 
     if "title" not in audio:
-        await chat.send_text("傳送失敗...是不是你的音樂檔案少了資訊標籤? :(")
+        await chat.send_text("Failed...No Id3 tag found :(")
         return
 
     doc = audio.copy()
@@ -65,10 +66,10 @@ async def add_track(chat, audio):
         doc["sender"] = os.environ.get("CHANNEL")
         
     await db.tracks.insert(doc)
-    logger.info("%s 新增了 %s %s", sendervar, doc.get("performer"), doc.get("title"))
-    await bot.send_message(os.environ.get("LOGCHN_ID"),sendervar + " 新增了 " + str(doc.get("performer")) + " - " + str(doc.get("title")))
+    logger.info("%s added %s %s", sendervar, doc.get("performer"), doc.get("title"))
+    await bot.send_message(os.environ.get("LOGCHN_ID"),sendervar + " added " + str(doc.get("performer")) + " - " + str(doc.get("title")))
     if (sendervar != os.environ.get('CHANNEL_NAME')):
-        await chat.send_text(sendervar + " 新增了 " + str(doc.get("performer")) + " - " + str(doc.get("title")) + " !")
+        await chat.send_text(sendervar + " added " + str(doc.get("performer")) + " - " + str(doc.get("title")) + " !")
 
 
 @bot.command(r'@%s (.+)' % bot.name)
@@ -78,7 +79,7 @@ def music(chat, match):
     return search_tracks(chat, match.group(1))
 
 
-@bot.command(r'\((\d+)/\d+\) 下一頁 "(.+)"')
+@bot.command(r'\((\d+)/\d+\) Next page "(.+)"')
 def more(chat, match):
     page = int(match.group(1))
     return search_tracks(chat, match.group(2), page)
@@ -94,32 +95,32 @@ async def inline(iq):
     art = msg[0].split('>')
     if (len(art) == 2):
         if (len(msg) == 2):
-            logger.info("%s 搜尋了 %s 格式的 %s 的 %s", iq.sender, msg[1].upper(), art[0], art[1])
-            await bot.send_message(os.environ.get("LOGCHN_ID"),str(iq.sender) + " 搜尋了 " + msg[1].upper() + " 格式的 " + art[0] + "的" + art[1])
+            logger.info("%s searched %s music %s - %s", iq.sender, msg[1].upper(), art[0], art[1])
+            await bot.send_message(os.environ.get("LOGCHN_ID"),str(iq.sender) + " searched " + msg[1].upper() + " music " + art[0] + " - " + art[1])
             cursor = text_search(iq.query)
             results = [inline_result(iq.query, t) for t in await cursor.to_list(10)]
             await iq.answer(results)
         elif (len(msg) == 1):
-            logger.info("%s 搜尋了 %s 的 %s", iq.sender,  art[0], art[1])
-            await bot.send_message(os.environ.get("LOGCHN_ID"),str(iq.sender) + " 搜尋了 " + art[0] + "的" + art[1])
+            logger.info("%s searched %s - %s", iq.sender,  art[0], art[1])
+            await bot.send_message(os.environ.get("LOGCHN_ID"),str(iq.sender) + " searched " + art[0] + " - " + art[1])
             cursor = text_search(iq.query)
             results = [inline_result(iq.query, t) for t in await cursor.to_list(10)]
             await iq.answer(results)
     elif (len(msg) == 2):
-        logger.info("%s 搜尋了 %s 格式的 %s", iq.sender, msg[1].upper(), msg[0])
-        await bot.send_message(os.environ.get("LOGCHN_ID"),str(iq.sender) + " 搜尋了 " + msg[1].upper() + " 格式的 " + msg[0])
+        logger.info("%s searched %s music %s", iq.sender, msg[1].upper(), msg[0])
+        await bot.send_message(os.environ.get("LOGCHN_ID"),str(iq.sender) + " searched " + msg[1].upper() + " music " + msg[0])
         cursor = text_search(iq.query)
         results = [inline_result(iq.query, t) for t in await cursor.to_list(10)]
         await iq.answer(results)
     elif (len(msg) == 1):
-        logger.info("%s 搜尋了 %s", iq.sender, iq.query)
-        await bot.send_message(os.environ.get("LOGCHN_ID"),str(iq.sender) + " 搜尋了 " + str(iq.query))
+        logger.info("%s searched %s", iq.sender, iq.query)
+        await bot.send_message(os.environ.get("LOGCHN_ID"),str(iq.sender) + " searched " + str(iq.query))
         cursor = text_search(iq.query)
         results = [inline_result(iq.query, t) for t in await cursor.to_list(10)]
         await iq.answer(results)
     else:
-        logger.info("元素個數有問題RR")
-        await bot.send_message(os.environ.get("LOGCHN_ID"),"元素個數有問題RRR")
+        logger.info("ERROR")
+        await bot.send_message(os.environ.get("LOGCHN_ID"),"ERROR")
         await bot.send_message(os.environ.get("LOGCHN_ID"),"(iq.query , msg , len(msg)) = " + str(iq.query) + " , " + str(msg) + " , " + str(len(msg)))
         logger.info("(iq.query , msg , len(msg)) = (%s , %s , %d)", str(iq.query), str(msg), len(msg))
 
@@ -133,8 +134,8 @@ def usage(chat, match):
 async def start(chat, match):
     tuid = chat.sender["id"]
     if not (await db.users.find_one({ "id": tuid })):
-        logger.info("新用戶 %s", chat.sender)
-        await bot.send_message(os.environ.get("LOGCHN_ID"),"新用戶 " + str(chat.sender))
+        logger.info("New user %s", chat.sender)
+        await bot.send_message(os.environ.get("LOGCHN_ID"),"New user " + str(chat.sender))
         await db.users.insert(chat.sender.copy())
 
     await chat.send_text(greeting, parse_mode='Markdown')
@@ -145,9 +146,9 @@ async def stop(chat, match):
     tuid = chat.sender["id"]
     await db.users.remove({ "id": tuid })
 
-    logger.info("%s 退出了", chat.sender)
-    await bot.send_message(os.environ.get("LOGCHN_ID"),str(chat.sender) + " 退出了")
-    await chat.send_text("掰掰! 😢")
+    logger.info("%s exited", chat.sender)
+    await bot.send_message(os.environ.get("LOGCHN_ID"),str(chat.sender) + " exited")
+    await chat.send_text("Goodbye! 😢")
 
 
 @bot.command(r'/help')
@@ -168,10 +169,10 @@ async def stats(chat, match):
     aggr = await cursor.to_list(1)
 
     if len(aggr) == 0:
-        return (await chat.send_text("統計資訊還沒好!"))
+        return (await chat.send_text("Info not prepared yet!"))
 
     size = human_size(aggr[0]["size"])
-    text = '%d 首歌曲, %s' % (count, size)
+    text = '%d songs, %s' % (count, size)
 
     return (await chat.send_text(text))
 
@@ -203,17 +204,17 @@ async def search_tracks(chat, query, page=1):
             author = art[0]
             song = art[1]
             if (len(typel) == 1):
-                logger.info("%s 搜尋了 %s 的 %s", chat.sender, author, song)
-                await bot.send_message(os.environ.get("LOGCHN_ID"),str(chat.sender) + " 搜尋了 " + author + " 的 " + song)
+                logger.info("%s searched %s - %s", chat.sender, author, song)
+                await bot.send_message(os.environ.get("LOGCHN_ID"),str(chat.sender) + " searched " + author + " - " + song)
             else:
-                logger.info("%s 搜尋了 %s 格式的 %s 的 %s", chat.sender, typel[1].upper(), author, song)
-                await bot.send_message(os.environ.get("LOGCHN_ID"),str(chat.sender) + " 搜尋了 " + typel[1].upper() + " 格式的 " + author + " 的 " + song)
+                logger.info("%s searched %s music %s - %s", chat.sender, typel[1].upper(), author, song)
+                await bot.send_message(os.environ.get("LOGCHN_ID"),str(chat.sender) + " searched " + typel[1].upper() + " music " + author + " - " + song)
         elif (len(typel) == 1):
-            logger.info("%s 搜尋了 %s", chat.sender, query)
-            await bot.send_message(os.environ.get("LOGCHN_ID"),str(chat.sender) + " 搜尋了 " + str(query))
+            logger.info("%s searched %s", chat.sender, query)
+            await bot.send_message(os.environ.get("LOGCHN_ID"),str(chat.sender) + " searched " + str(query))
         else:
-            logger.info("%s 搜尋了 %s 格式的 %s", chat.sender, typel[1].upper(), typel[0])
-            await bot.send_message(os.environ.get("LOGCHN_ID"),str(chat.sender) + " 搜尋了 " + typel[1].upper() + " 格式的 " + str(typel[0]))
+            logger.info("%s searched %s music %s", chat.sender, typel[1].upper(), typel[0])
+            await bot.send_message(os.environ.get("LOGCHN_ID"),str(chat.sender) + " searched " + typel[1].upper() + " music " + str(typel[0]))
 
         limit = 3
         offset = (page - 1) * limit
@@ -236,7 +237,7 @@ async def search_tracks(chat, query, page=1):
 
         if show_more:
             pages = math.ceil(count / limit)
-            kb = [['(%d/%d) 下一頁 "%s"' % (page+1, pages, query)]]
+            kb = [['(%d/%d) Next page "%s"' % (page+1, pages, query)]]
             keyboard = {
                 "keyboard": kb,
                 "resize_keyboard": True
@@ -259,7 +260,7 @@ def inline_result(query, track):
             "type": "document",
             "id": track["file_id"] + str(random.randint(0,99)),
             "document_file_id": track["file_id"],
-            "title" : "{} - {}".format(track.get("performer", "未知藝術家"),track.get("title", "無標題")),
+            "title" : "{} - {}".format(track.get("performer", "Unknown Artist"),track.get("title", "Untitled")),
             "input_message_content" : noinline
             }
     return results
