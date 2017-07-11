@@ -43,6 +43,8 @@ Command `/music`  to send music files from this bot in a group chat.
 
 >```/music Xiaoan```
 
+Reply `/add` to a music file in a group chat to add music file to the database.
+
 Songs which was uploaded to the music channel will be sync to the database.
 
 

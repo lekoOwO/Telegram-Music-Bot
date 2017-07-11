@@ -25,8 +25,9 @@ Seperate the artist and song by > .
 It also works great with type.
 ```Xiaoan>The song of early-spring type:flac```
 Command /stats for the status of bot.
-Command /music to send music files from this bot in a group chat.
+Command /music to return music files from this bot in a group chat.
 ```/music Xiaoan```
+Reply `/add` to a music file in a group chat to add music file to the database.
 Songs which was uploaded to the music channel will be sync to the database.
 This bot supports inline mode, too.
 """
@@ -44,6 +45,9 @@ logger = logging.getLogger("musicbot")
 channel = bot.channel(os.environ.get('CHANNEL'))
 @bot.handle("audio")
 async def add_track(chat, audio):
+    if "title" not in audio:
+        await chat.send_text("Failed...No Id3 tag found :(")
+        return
     if (str(chat.sender) == 'N/A'):
         sendervar = os.environ.get('CHANNEL_NAME')
     else:
@@ -53,11 +57,6 @@ async def add_track(chat, audio):
         logger.info("%s sent a existed music %s %s", sendervar, str(audio.get("performer")), str(audio.get("title")))
         await bot.send_message(os.environ.get("LOGCHN_ID"),sendervar + " sent a existed music " + str(audio.get("performer")) + " - " + str(audio.get("title")))
         return
-
-    if "title" not in audio:
-        await chat.send_text("Failed...No Id3 tag found :(")
-        return
-
     doc = audio.copy()
     try:
         if (chat.sender["id"]):
@@ -71,7 +70,34 @@ async def add_track(chat, audio):
     if (sendervar != os.environ.get('CHANNEL_NAME')):
         await chat.send_text(sendervar + " added " + str(doc.get("performer")) + " - " + str(doc.get("title")) + " !")
 
-
+@bot.command(r'/add')
+async def add(chat, match):
+    audio = chat.message['reply_to_message']['audio']
+    if "title" not in audio:
+        await chat.send_text("Failed...No Id3 tag found :(")
+        return
+    if (str(chat.sender) == 'N/A'):
+        sendervar = os.environ.get('CHANNEL_NAME')
+    else:
+        sendervar = str(chat.sender)
+    if (await db.tracks.find_one({ "file_id": audio["file_id"] })):
+        await chat.send_text("The song has already been added to the database owo")
+        logger.info("%s sent a existed music %s %s", sendervar, str(audio.get("performer")), str(audio.get("title")))
+        await bot.send_message(os.environ.get("LOGCHN_ID"),sendervar + " sent a existed music " + str(audio.get("performer")) + " - " + str(audio.get("title")))
+        return
+    doc = audio.copy()
+    try:
+        if (chat.sender["id"]):
+            doc["sender"] = chat.sender["id"]
+    except:
+        doc["sender"] = os.environ.get("CHANNEL")
+        
+    await db.tracks.insert(doc)
+    logger.info("%s added %s %s", sendervar, doc.get("performer"), doc.get("title"))
+    await bot.send_message(os.environ.get("LOGCHN_ID"),sendervar + " added " + str(doc.get("performer")) + " - " + str(doc.get("title")))
+    if (sendervar != os.environ.get('CHANNEL_NAME')):
+        await chat.send_text(sendervar + " added " + str(doc.get("performer")) + " - " + str(doc.get("title")) + " !")
+    
 @bot.command(r'@%s (.+)' % bot.name)
 @bot.command(r'/music@%s (.+)' % bot.name)
 @bot.command(r'/music (.+)')
