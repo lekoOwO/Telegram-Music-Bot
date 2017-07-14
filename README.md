@@ -47,7 +47,13 @@ Reply `/add` to a music file in a group chat to add music file to the database.
 
 Songs which was uploaded to the music channel will be sync to the database.
 
+Admins of the log channel will also be added to this bot's admin list.
 
+### Admin commands
+
+>```/delete The Song of early-spring```
+
+`/admin` to return a list of admin.
 
 ## Environment Variables
 

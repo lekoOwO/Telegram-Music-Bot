@@ -9,7 +9,7 @@ db = client[os.environ.get('MONGO_DB_NAME')]
 
 
 
-def text_search(query):
+async def text_search(query):
     typel = query.split(" type:")
     if (query.find(">") == -1):
         if (len(typel) == 1):
@@ -46,6 +46,51 @@ def text_search(query):
                 {'performer': re.compile (reduce(lambda x,y: x+'(?=.*?'+y+')', performer) + '.*?', re.IGNORECASE)}
                 ]}]},
             { 'score': { '$meta': 'textScore' } }).sort([('score', {'$meta': 'textScore'})])
+    else:
+        logger.info("DATABASE ERROR!")
+        await bot.send_message(logChannelID,"DATABASE ERROR!")
+
+
+async def text_delete(query):
+    typel = query.split(" type:")
+    if (query.find(">") == -1):
+        if (len(typel) == 1):
+            typef = 'audio'
+        elif (typel[1] == 'mp3'):
+            typef = 'mpeg'
+        else:
+            typef = typel[1]
+        keyword = typel[0].split(" ")
+        keyword_regex = re.compile (reduce(lambda x,y: x+'(?=.*?'+y+')', keyword) + '.*?', re.IGNORECASE)
+        result = await db.tracks.delete_many(
+            {"$and":[
+                {'mime_type': re.compile (typef, re.IGNORECASE)},
+                {"$or":[
+                    {'title': keyword_regex},
+                    {'performer': keyword_regex}
+                ]}]})
+        return result.deleted_count
+    elif (query.find(">") != -1):
+        art = typel[0].split(">")
+        if (len(typel) == 1):
+            typef = 'audio'
+        elif (typel[1] == 'mp3'):
+            typef = 'mpeg'
+        else:
+            typef = typel[1]
+        title = art[1].split(" ")
+        performer = art[0].split(" ")
+        result = await db.tracks.delete_many(
+            {"$and":[
+                {'mime_type': re.compile (typef, re.IGNORECASE)},
+                {"$and":[
+                    {'title': re.compile (reduce(lambda x,y: x+'(?=.*?'+y+')', title) + '.*?', re.IGNORECASE)},
+                    {'performer': re.compile (reduce(lambda x,y: x+'(?=.*?'+y+')', performer) + '.*?', re.IGNORECASE)}
+                ]}]})
+        return result.deleted_count
+    else:
+        logger.info("DATABASE ERROR!")
+        await bot.send_message(logChannelID,"DATABASE ERROR!")
 
 async def prepare_index():
     await db.tracks.create_index([
