@@ -1,5 +1,5 @@
 musicbot:
-  image: szastupov/musicbot
+  image: rexx0520/Telegram-Music-Bot
   restart: always
   links:
     - mongo
@@ -8,6 +8,13 @@ musicbot:
     - API_TOKEN=
     - BOTAN_TOKEN=Optional botan token
     - MONGO_HOST=MONGODB_URI
+    - CHANNEL=
+    - CHANNEL_NAME=
+    - LOGCHN_ID=
+    - REST_PORT=
+    - REST_HOST=
+    - MONGO_DB_NAME=
+    - LANG=zh-TW
 mongo:
   image: mongo
   restart: always
