@@ -7,13 +7,18 @@
 這是一個 Telegram 的 音樂 Bot
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### Improvements
+=======
+由 [szastupov/musicbot](//github.com/szastupov/musicbot) 改進而成。
+>>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
 =======
 由 [szastupov/musicbot](//github.com/szastupov/musicbot) 改進而成。
 >>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
 
 - Rewrote search logic, fuzzy search is supported.
 
+<<<<<<< HEAD
 - More formats supported.
 
 - Search parameters, including artist, title and formats.
@@ -22,6 +27,7 @@
 
 - Admin function, delete is supported.
 
+=======
 
 ## 用法
 
@@ -30,8 +36,20 @@
 輸入 `/help` 來獲取說明
 
 在關鍵字後輸入`type:TYPE`來限定音樂格式，像這樣:
+>>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
+
+## 用法
+
+<<<<<<< HEAD
+輸入關鍵字來搜尋音樂資料庫，傳送音樂檔案以增加至資料庫。
+
+輸入 `/help` 來獲取說明
+
+在關鍵字後輸入`type:TYPE`來限定音樂格式，像這樣:
 
 
+=======
+>>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
 >```棒棒勝 type:flac```
 >
 >```棒棒勝 type:mp3```
@@ -91,6 +109,7 @@ log 頻道的管理員將獲得 Bot 管理員權限。
 例如 : `mongodb://user:pwd@host/python`
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 **MONGO_DB_NAME** : MongoDB Database's name.
 
 **LANG** : Language.
@@ -98,6 +117,9 @@ log 頻道的管理員將獲得 Bot 管理員權限。
 Currently Chinese(Taiwan) only. [zh-TW]
 
 Feel free to open a PR!
+=======
+**MONGO_DB_NAME** : MongoDB 資料庫的名字
+>>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
 =======
 **MONGO_DB_NAME** : MongoDB 資料庫的名字
 >>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
