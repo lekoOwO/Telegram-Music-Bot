@@ -1,24 +1,16 @@
-﻿# Telegram 音樂 bot
+﻿# Telegram Music Bot
 
-[![部屬到 OpenShift](http://launch-shifter.rhcloud.com/launch/light/部屬到.svg)](https://openshift.redhat.com/app/console/application_type/custom?&cartridges[]=python-3.5&initial_git_url=https://github.com/rexx0520/Telegram-Music-Bot&name=Telegram%20Music%20Bot)
+[![LAUNCH ON OpenShift](http://launch-shifter.rhcloud.com/launch/light/LAUNCH%20ON.svg)](https://openshift.redhat.com/app/console/application_type/custom?&cartridges[]=python-3.5&initial_git_url=https://github.com/rexx0520/Telegram-Music-Bot&name=Telegram%20Music%20Bot)
 
-## 簡介
+## Description
 
-這是一個 Telegram 的 音樂 Bot
+This is a Telegram music catalog bot.
+Was originated and  improved from [szastupov/musicbot](//github.com/szastupov/musicbot) .
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 ### Improvements
-=======
-由 [szastupov/musicbot](//github.com/szastupov/musicbot) 改進而成。
->>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
-=======
-由 [szastupov/musicbot](//github.com/szastupov/musicbot) 改進而成。
->>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
 
 - Rewrote search logic, fuzzy search is supported.
 
-<<<<<<< HEAD
 - More formats supported.
 
 - Search parameters, including artist, title and formats.
@@ -27,89 +19,75 @@
 
 - Admin function, delete is supported.
 
-=======
+## Usage
 
-## 用法
+Simply type in keywords to search from the database.
 
-輸入關鍵字來搜尋音樂資料庫，傳送音樂檔案以增加至資料庫。
+Simply send music files to add to the database.
 
-輸入 `/help` 來獲取說明
+Command  `/help`  for help.
 
-在關鍵字後輸入`type:TYPE`來限定音樂格式，像這樣:
->>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
-
-## 用法
-
-<<<<<<< HEAD
-輸入關鍵字來搜尋音樂資料庫，傳送音樂檔案以增加至資料庫。
-
-輸入 `/help` 來獲取說明
-
-在關鍵字後輸入`type:TYPE`來限定音樂格式，像這樣:
+`type:TYPE` after keywords to restrict the type of result.
 
 
-=======
->>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
->```棒棒勝 type:flac```
+>```Xiaoan type:flac```
 >
->```棒棒勝 type:mp3```
->
->```棒棒勝 type:mpeg```
+>```Xiaoan type:mp3``` ( `mp3` was converted to `mpeg` in bot since mp3 is not a mime-type.)
+> 
+>```Xiaoan type:mpeg```
 
-若同時想搜尋作者和曲名，請用 `>` 隔開 (預設為作者、曲名都納入搜尋)，像這樣:
-
-
->```棒棒勝>洨安之歌```
-
-也可以搭配`type`指令，像這樣:
+Seperate the artist and song by `>` .
 
 
->```棒棒勝>洨安之歌 type:flac```
+>```Xiaoan>The song of early-spring```
 
-輸入 `/stats` 來獲取 bot 資訊。
-
-用 `/music` 指令來在群聊內使用棒棒勝 Music Bot，像這樣:
+It also works great with `type`.
 
 
->```/music 棒棒勝```
+>```Xiaoan>The song of early-spring type:flac```
 
-對於一個音樂文件回覆 `/add` 來新增至資料庫。
+Command  `/stats`  for the status of bot.
 
-丟進音樂頻道的歌曲將會被同步至資料庫。
-
-log 頻道的管理員將獲得 Bot 管理員權限。
-
-### 管理員指令:
-
->```/delete 棒棒勝```
-
-`/admin` 可以看到目前的管理員列表。
-
-## 環境變數
-
-**API_TOKEN** : Bot 的 API Token
-
-**BOT_NAME** : Bot 的名字
+Command `/music`  to send music files from this bot in a group chat.
 
 
-**CHANNEL** : 音樂頻道 ID
+>```/music Xiaoan```
 
-**CHANNEL_NAME** : 音樂頻道的名字
+Reply `/add` to a music file in a group chat to add music file to the database.
 
-**LOGCHN_ID** : log 頻道的 chat ID (記得帶負號)
+Songs which was uploaded to the music channel will be sync to the database.
+
+Admins of the log channel will also be added to this bot's admin list.
+
+### Admin commands
+
+>```/delete The Song of early-spring```
+
+`/admin` to return a list of admin.
+
+## Environment Variables
+
+**API_TOKEN** : Bot's API Token.
+
+**BOT_NAME** : Bot's name.
 
 
-**REST_PORT** : REST API 的埠
+**CHANNEL** : Music channel's ID.
 
-**REST_HOST** : REST API 的主機IP，通常是 `0.0.0.0`
+**CHANNEL_NAME** : Music channel's name.
+
+**LOGCHN_ID** : log channel's chat ID. (with `-`)
 
 
-**MONGO_HOST** : MongoDB 的網址
+**REST_PORT** : REST API's port. Usually `8080`.
 
-例如 : `mongodb://user:pwd@host/python`
+**REST_HOST** : REST API's host. Usually `0.0.0.0`.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
+**MONGO_HOST** : MongoDB 's URL.
+
+e.g. :  `mongodb://user:pwd@host/python`
+
 **MONGO_DB_NAME** : MongoDB Database's name.
 
 **LANG** : Language.
@@ -117,9 +95,3 @@ log 頻道的管理員將獲得 Bot 管理員權限。
 Currently Chinese(Taiwan) only. [zh-TW]
 
 Feel free to open a PR!
-=======
-**MONGO_DB_NAME** : MongoDB 資料庫的名字
->>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
-=======
-**MONGO_DB_NAME** : MongoDB 資料庫的名字
->>>>>>> ca5cb393442d75c3a38ae93672504ce05e7ed4a3
