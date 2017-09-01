@@ -8,7 +8,17 @@
 
 由 [szastupov/musicbot](//github.com/szastupov/musicbot) 改進而成。
 
+### 改進項目
 
+- 重寫的搜尋邏輯，支援模糊搜尋。
+
+- 支援更多格式
+
+- 支援搜尋參數，可限定藝術家、曲名和檔案格式
+
+- Log Channel 支援
+
+- 管理員功能，支援刪除資料
 
 ## 用法
 
@@ -78,3 +88,9 @@ log 頻道的管理員將獲得 Bot 管理員權限。
 例如 : `mongodb://user:pwd@host/python`
 
 **MONGO_DB_NAME** : MongoDB 資料庫的名字
+
+**LANG** : 語言設定
+
+可用語言:zh-TW
+
+歡迎發 PR 新增翻譯!
