@@ -5,25 +5,27 @@
 ## Description
 
 This is a Telegram music catalog bot.
-Was originated and  improved from [szastupov/musicbot](//github.com/szastupov/musicbot) .
+Was originated and improved from [szastupov/musicbot](//github.com/szastupov/musicbot) .
 
 ### Improvements
 
 - Rewrote search logic, fuzzy search is supported.
 
-- More formats supported.
+- More formats is supported.
 
-- Search parameters, including artist, title and formats.
+- Various searching parameters, including artist, title and formats.
 
 - Log channel support
 
-- Admin function, delete is supported.
+- Admin function, `/delete` is supported.
+
+- Duplicates detection. Will only keep the one with a highest resolution.
 
 ## Usage
 
-Simply type in keywords to search from the database.
+Simply send keywords to search from the database.
 
-Simply send music files to add to the database.
+Send music files to add it to the database.
 
 Command  `/help`  for help.
 
@@ -57,7 +59,7 @@ Reply `/add` to a music file in a group chat to add music file to the database.
 
 Songs which was uploaded to the music channel will be sync to the database.
 
-Admins of the log channel will also be added to this bot's admin list.
+Add admins assigning as an admin of the log channel.
 
 ### Admin commands
 
