@@ -342,14 +342,10 @@ def inline_result(query, track):
     global seed
     seed = query + str(random.randint(0,9999999))
     random.seed(query + str(random.randint(0,9999999)))
-    noinline ={
-        "message_text": track.get("performer", "") + ">" + track.get("title", "")
-    }
     results = {
             "type": "document",
             "id": track["file_id"] + str(random.randint(0,99)),
             "document_file_id": track["file_id"],
             "title" : "{} - {}".format(track.get("performer", texts['unknownArtist']),track.get("title", texts['untitled'])),
-            "input_message_content" : noinline
             }
     return results
