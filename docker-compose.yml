@@ -1,20 +1,20 @@
-musicbot:
-  build: .
-  restart: always
-  links:
-    - mongo
-  environment:
-    - BOT_NAME=
-    - API_TOKEN=
-    - BOTAN_TOKEN=Optional botan token
-    - MONGO_HOST=MONGODB_URI
-    - CHANNEL=
-    - CHANNEL_NAME=
-    - LOGCHN_ID=
-    - REST_PORT=
-    - REST_HOST=
-    - MONGO_DB_NAME=
-    - LANG=zh-TW
-mongo:
-  image: mongo
-  restart: always
+version: "3.8"
+services:
+  musicbot:
+    build: .
+    links:
+      - mongo
+    environment:
+      - BOT_NAME=
+      - API_TOKEN=
+      - BOTAN_TOKEN=Optional botan token
+      - MONGO_HOST=MONGODB_URI
+      - CHANNEL=
+      - CHANNEL_NAME=
+      - LOGCHN_ID=
+      - REST_PORT=
+      - REST_HOST=
+      - MONGO_DB_NAME=
+      - LANG=zh-TW
+  mongo:
+    image: mongo
