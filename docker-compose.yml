@@ -1,5 +1,5 @@
 musicbot:
-  image: rexx0520/Telegram-Music-Bot
+  build: .
   restart: always
   links:
     - mongo
